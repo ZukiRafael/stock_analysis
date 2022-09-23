@@ -1,5 +1,7 @@
 from alpaca_trade_api.rest import REST, TimeFrame, TimeFrameUnit
 import pandas as pd
+from datetime import date, timedelta
+
 from alpaca_secrets.alpaca_keys import alpaca_secret, alpaca_key
 
 
@@ -26,7 +28,7 @@ def fetch_data(ticker, year):
     end_date = year + '-12-31'
     if year == 'ytd':
         start_date = "2022-01-01"
-        end_date = "2022-09-08"
+        end_date = str(date.today() - timedelta(days=1))
     df = get_daily_stock_bar_data(ticker, dates=[start_date, end_date])
     df.to_csv("../export/" + ticker + "-" + year + ".csv")
     return df
@@ -36,4 +38,5 @@ if __name__ == "__main__":
     target_ticker = 'NFLX'
     years = ['ytd'] + [str(yr) for yr in range(2021, 2002, -1)]
     for year in years:
+        print(f"fetching {target_ticker}'s {year} Data")
         fetch_data(target_ticker, year)
